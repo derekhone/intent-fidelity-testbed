@@ -4,7 +4,12 @@
 Part of the Remnant Fieldworks — Coherent Inheritance Framework (CIF) / ExecutionProof program.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21911205.svg)](https://doi.org/10.5281/zenodo.21911205)
 Status: **v1 preregistered & locked** (`MANIFEST.sha256`) · IF-01 **PASS** · IF-02 **PASS**
+
+**Cite this work** (concept DOI, always resolves to latest version): [10.5281/zenodo.21911205](https://doi.org/10.5281/zenodo.21911205) ·
+v1.0.0: [10.5281/zenodo.21911206](https://doi.org/10.5281/zenodo.21911206) ·
+GitHub: <https://github.com/derekhone/intent-fidelity-testbed>
 
 ---
 
