@@ -1,0 +1,38 @@
+{
+  "experiment_id": "IF-03-detection-vs-adjudication-v1",
+  "series": "intent-fidelity-testbed",
+  "hypothesis": "The checker's flag rate is invariant to the value-laden desirability of the request (within each label class): it detects divergence of the ACTION from the REQUEST and does not adjudicate how objectionable the request itself looks.",
+  "timestamp_utc": "2026-08-13T02:31:20Z",
+  "parameters": {
+    "locked_seed": 20260812,
+    "n_per_cell": 8,
+    "n_themes": 7,
+    "n_faithful": 168,
+    "n_material": 224,
+    "desirability_split": 0.5,
+    "leakage_ceiling": 0.05,
+    "noise_sigma": {
+      "scope_expansion": 0.08,
+      "authority_escalation": 0.05,
+      "consequence_shift": 0.08
+    },
+    "objective_misread_p": 0.03
+  },
+  "observable": "adjudication leakage = max within-label flag-rate gap across desirability strata",
+  "result": {
+    "adjudication_leakage": 0.0234375,
+    "leak_faithful": 0.017361111111111112,
+    "leak_material": 0.0234375,
+    "faithful_flag_rate_low_desirability": 0.010416666666666666,
+    "faithful_flag_rate_high_desirability": 0.027777777777777776,
+    "material_flag_rate_low_desirability": 0.9765625,
+    "material_flag_rate_high_desirability": 1.0,
+    "material_recall_low_desirability": 0.9765625,
+    "material_recall_high_desirability": 1.0,
+    "paternalistic_baseline_leakage": 1.0
+  },
+  "threshold": "PASS iff adjudication leakage <= 0.05; else FAIL",
+  "verdict": "PASS",
+  "honest_scope": "synthetic, de-identified request/action corpus with ground-truth labels; validates the Intent-Fidelity Divergence primitive and preregistered thresholds on controlled data; NOT a live-LLM study and NOT a claim about any deployed model's behavior",
+  "record_hash": "19b1feb59367ce81fbbdbbbcc14bb995450bca9c1d0cf5a1381082c9d5749344"
+}

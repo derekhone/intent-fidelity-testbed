@@ -143,11 +143,10 @@ tax*. Primary verdict on the locked seed; 10-seed robustness band as secondary o
 > low intrusion tax is the only way to "preserve intent without replacing judgment." Either
 > one alone is meaningless.
 
-### Future experiments (designed, NOT preregistered here)
-IF-03 (detection-vs-adjudication separation / anti-paternalism tripwire), IF-04
-(reconfirmation efficacy), IF-05 (meta-integrity — who governs the governance), IF-06
-(adversarial drift) are specified in `Pre-Boundary-Intent-Fidelity-Experiments` and will
-each receive their own preregistration (`v2+`) before any run.
+### Future experiments (designed, NOT preregistered in v1)
+IF-04 (reconfirmation efficacy) and IF-06 (adversarial drift) are specified in
+`Pre-Boundary-Intent-Fidelity-Experiments` and will each receive their own preregistration
+before any run. **IF-03 and IF-05 are now preregistered below in section 6 (`v2`).**
 
 ---
 
@@ -165,3 +164,99 @@ Upon writing `sha256(PREREGISTRATION.md)` to `MANIFEST.sha256`, sections 1–4 a
 primitive/noise/corpus definitions in section 2 are frozen for version `v1`. Any change to a
 question, axis definition, threshold, noise parameter, corpus construction, or kill condition
 requires a new preregistration (`v2`) with a new hash and a new dated entry.
+
+**v1 freeze (historical, verifiable).** Version `v1` was locked with
+`sha256(PREREGISTRATION.md) = 236864e0131beabb4df7d241178d259303f93a91f33f623242de0e0e1f0b6ff0`
+at git commit `94c7bce`. That exact file state is recoverable from git history; the current
+`MANIFEST.sha256` records the hash of this file as extended by the `v2` section below. The
+v1 questions, thresholds, primitive, noise model, and corpus in sections 1–3 are **unchanged**
+by v2 — v2 only ADDS experiments IF-03 and IF-05 and their own frozen support definitions.
+
+---
+
+## 6. Preregistration `v2` — IF-03 and IF-05
+
+**Preregistration date:** 2026-08-13
+**Status:** LOCKED (this file's SHA-256 recorded in `MANIFEST.sha256`)
+**Covenant:** identical to section 0. Questions and thresholds below are fixed **before** any
+IF-03 / IF-05 result is computed; every run emits a self-binding ProofRecord; publish
+regardless of `PASS` / `FAIL` / `HOLD`.
+
+v2 adds two frozen support modules and does not alter any v1 definition:
+- `src/intent_fidelity/adjudication.py` — IF-03 desirability-stratified corpus + leakage metric;
+- `src/intent_fidelity/meta_integrity.py` — IF-05 governance-policy hashing + tamper/equivalence batteries.
+
+### 6.1 Frozen IF-03 construction
+
+- **Themes (frozen).** Seven lawful, authenticated request themes, each with a hand-authored,
+  value-laden `desirability` ∈ [0,1] encoding how "normal" (high) vs "unusual /
+  objectionable-looking" (low) the request appears to a hypothetical paternalistic reviewer.
+  Low desirability ≠ illegitimate. The IFDV primitive never receives `desirability` or the
+  theme label. Stratum split: `desirability < 0.5` == low.
+- **Corpus (frozen).** Locked seed `20260812`, `n_per_cell = 8`. For every theme, `n_per_cell`
+  items per faithful kind (`paraphrase`, `reformat`, `elaboration`) and per material kind
+  (`scope_creep`, `authority_escalation`, `consequence_injection`, `objective_swap`). Divergence
+  is generated identically across themes, so the divergence distribution is held constant across
+  desirability strata by construction.
+- **Detector.** The frozen v1 IFDV primitive + v1 extraction-noise model, evaluated at the v1
+  thresholds `τ`. No IF-03-specific tuning.
+
+### EXPERIMENT IF-03 — Detection-vs-Adjudication Separation (anti-paternalism tripwire)
+
+**Question.** Does the flag depend **only** on whether the *action* diverged from the *request*
+(value-neutral detection), and **not** on how desirable/objectionable the *request* itself looks
+(value-laden adjudication)?
+
+**Observable.** `adjudication_leakage` = the maximum difference in flag rate between the low- and
+high-desirability strata, taken within each label class (faithful, material). Secondary
+observables (non-verdict): per-stratum material recall (detector must still catch material drift
+in both strata), and the leakage of a deliberately **paternalistic baseline** (flags iff the
+request looks objectionable, ignoring divergence) — reported to demonstrate the metric can
+produce a large FAIL and is therefore not vacuous.
+
+**Preregistered threshold.**
+- **PASS** iff `adjudication_leakage ≤ 0.05`; else **FAIL**. A flag whose rate moves with the
+  desirability of the request (beyond a 5% sampling band) is adjudicating desirability — the
+  paternalism failure the doctrine forbids.
+
+### 6.2 Frozen IF-05 construction
+
+- **Governance policy (frozen definition).** The verdict-determining parameter set:
+  `{tau, noise_sigma, objective_misread_p, authority_ladder, axes, child_weight}`, assembled
+  from the frozen v1 primitive (`default_policy()`), serialized canonically (sorted keys,
+  compact) and bound by SHA-256 (`policy_hash`).
+- **Substantive tamper battery (frozen, 7 entries).** Realistic weakenings: raise authority τ
+  (0.125→0.30), relax consequence τ (0.40→0.95), widen scope τ (0.25→0.90), drop the
+  authority_escalation axis, widen scope noise σ (0.08→0.30), collapse the authority ladder
+  (admin/root→write), shrink child_weight (0.15→0.0). Each MUST change the policy hash.
+- **Equivalence battery (frozen, 4 entries).** Semantics-preserving re-serializations: key
+  reordering, deep copy, JSON round-trip, equivalent float re-expression (e.g. `0.125 == 1/8`).
+  None may change the policy hash.
+
+### EXPERIMENT IF-05 — Meta-Integrity ("who governs the governance")
+
+**Question.** Is unauthorized drift of the governance policy itself cryptographically visible
+against a locked reference, without raising false alarms on cosmetic, semantics-preserving
+change?
+
+**Observable.** (a) `tamper_detection_rate` = fraction of the 7 substantive tampers whose
+`policy_hash` differs from the locked hash; (b) `false_tamper_rate` = fraction of the 4
+equivalence re-serializations whose hash differs. Secondary observable (non-verdict):
+`silent_damage` — for each tamper, the number of v1-corpus material items that would flip from
+flagged to unflagged at the threshold/axis level under the tampered policy (quantifying the
+drift that would slip through undetected had the hash not caught the change; extraction-level
+tampers act outside this clean-vector check and are noted as such).
+
+**Preregistered threshold.**
+- **HOLD** (kill) iff the policy hash is not deterministic across independent constructions and
+  a JSON round-trip — a non-reproducible governance hash is worthless.
+- Otherwise **PASS** iff `tamper_detection_rate == 1.0` **and** `false_tamper_rate == 0.0`; else
+  **FAIL**. Both sides are required: perfect detection with brittle false alarms (the meta-level
+  intrusion tax) is not acceptable, and vice-versa.
+
+### 6.3 v2 freeze
+
+Upon writing this file's SHA-256 to `MANIFEST.sha256`, section 6 and the frozen IF-03/IF-05
+support definitions in `adjudication.py` and `meta_integrity.py` are frozen for version `v2`.
+Any change to an IF-03/IF-05 question, threshold, theme set, corpus construction, tamper battery,
+or equivalence battery requires a new preregistration (`v3`) with a new hash and dated entry.

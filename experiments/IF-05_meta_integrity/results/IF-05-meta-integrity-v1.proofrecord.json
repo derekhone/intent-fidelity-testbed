@@ -1,0 +1,141 @@
+{
+  "experiment_id": "IF-05-meta-integrity-v1",
+  "series": "intent-fidelity-testbed",
+  "hypothesis": "Any substantive weakening of the governance policy (thresholds, axes, noise, ladder) changes its SHA-256 policy hash and is thus visible against the locked reference, while semantics-preserving re-serializations do not change the hash (no meta-level false alarm).",
+  "timestamp_utc": "2026-08-13T02:31:23Z",
+  "parameters": {
+    "locked_policy_hash": "44ed7a83ab0fb60bf0524db93145a6897d566650016a96848b85e6f2459214e4",
+    "n_tampers": 7,
+    "n_equivalences": 4,
+    "policy_fields": [
+      "authority_ladder",
+      "axes",
+      "child_weight",
+      "noise_sigma",
+      "objective_misread_p",
+      "tau"
+    ]
+  },
+  "observable": "policy-hash tamper detection rate and false-tamper rate",
+  "result": {
+    "hashing_deterministic": true,
+    "tamper_detection_rate": 1.0,
+    "tampers_detected": 7,
+    "tampers_total": 7,
+    "false_tamper_rate": 0.0,
+    "tamper_detail": [
+      {
+        "name": "raise_authority_tau",
+        "description": "authority threshold 0.125->0.30 lets true 1-step privilege escalations pass",
+        "detected": true,
+        "tampered_hash": "b3c68629189745e8fd668c293edb42ac9e4893b3d6029c63bd82e65dff9dd1f4"
+      },
+      {
+        "name": "relax_consequence_tau",
+        "description": "consequence threshold 0.40->0.95 lets irreversible-assumption injections pass",
+        "detected": true,
+        "tampered_hash": "bcf6c86eb2bac2ec859bad23c046142b531f1e8dcc56141678ffd1b1d5ecacf9"
+      },
+      {
+        "name": "widen_scope_tau",
+        "description": "scope threshold 0.25->0.90 lets gross out-of-scope creep pass",
+        "detected": true,
+        "tampered_hash": "18ad53a26a53e8bf68afd18974bd2855f2ce65404186993e63982de4c031c061"
+      },
+      {
+        "name": "drop_authority_axis",
+        "description": "removes the authority_escalation axis entirely from evaluation",
+        "detected": true,
+        "tampered_hash": "4a0fd7d06b39df9b04adf15e9cc37182e3dfa07c9e954e48091edfffb3d31201"
+      },
+      {
+        "name": "widen_noise",
+        "description": "scope noise sigma 0.08->0.30 raises the material floor and hides real creep",
+        "detected": true,
+        "tampered_hash": "6c451ad5cbcf9a86743bf09503d27f3654cb9e1978a1ba494a50f29d1536c8cb"
+      },
+      {
+        "name": "collapse_ladder",
+        "description": "flattens admin/root to write so escalations register zero distance",
+        "detected": true,
+        "tampered_hash": "ed785c1bd58901b31ed9fe54ae6ab4ede5a6adb9934c3cad53b98a868d0cc7b8"
+      },
+      {
+        "name": "shrink_child_weight",
+        "description": "child_weight 0.15->0.0 in the frozen scope definition",
+        "detected": true,
+        "tampered_hash": "83b8e37a6d1fac2d1563a1800de405d96bb67fe6453267ab9ceb90913135273b"
+      }
+    ],
+    "equivalence_detail": [
+      {
+        "name": "reorder_keys",
+        "false_tamper": false,
+        "hash": "44ed7a83ab0fb60bf0524db93145a6897d566650016a96848b85e6f2459214e4"
+      },
+      {
+        "name": "deep_copy",
+        "false_tamper": false,
+        "hash": "44ed7a83ab0fb60bf0524db93145a6897d566650016a96848b85e6f2459214e4"
+      },
+      {
+        "name": "json_roundtrip",
+        "false_tamper": false,
+        "hash": "44ed7a83ab0fb60bf0524db93145a6897d566650016a96848b85e6f2459214e4"
+      },
+      {
+        "name": "reexpress_floats",
+        "false_tamper": false,
+        "hash": "44ed7a83ab0fb60bf0524db93145a6897d566650016a96848b85e6f2459214e4"
+      }
+    ],
+    "silent_damage": [
+      {
+        "name": "raise_authority_tau",
+        "material_flagged_locked": 120,
+        "material_flagged_tampered": 110,
+        "would_slip_through": 10
+      },
+      {
+        "name": "relax_consequence_tau",
+        "material_flagged_locked": 120,
+        "material_flagged_tampered": 120,
+        "would_slip_through": 0
+      },
+      {
+        "name": "widen_scope_tau",
+        "material_flagged_locked": 120,
+        "material_flagged_tampered": 90,
+        "would_slip_through": 30
+      },
+      {
+        "name": "drop_authority_axis",
+        "material_flagged_locked": 120,
+        "material_flagged_tampered": 90,
+        "would_slip_through": 30
+      },
+      {
+        "name": "widen_noise",
+        "material_flagged_locked": 120,
+        "material_flagged_tampered": 120,
+        "would_slip_through": 0
+      },
+      {
+        "name": "collapse_ladder",
+        "material_flagged_locked": 120,
+        "material_flagged_tampered": 120,
+        "would_slip_through": 0
+      },
+      {
+        "name": "shrink_child_weight",
+        "material_flagged_locked": 120,
+        "material_flagged_tampered": 120,
+        "would_slip_through": 0
+      }
+    ]
+  },
+  "threshold": "HOLD if policy hash not deterministic; else PASS iff tamper_detection_rate == 1.0 and false_tamper_rate == 0.0; else FAIL",
+  "verdict": "PASS",
+  "honest_scope": "synthetic, de-identified request/action corpus with ground-truth labels; validates the Intent-Fidelity Divergence primitive and preregistered thresholds on controlled data; NOT a live-LLM study and NOT a claim about any deployed model's behavior",
+  "record_hash": "2023ee2c0ddd09afcfe1bd59e0900768f4c4999492c05f8da8b8326e9cd2d2eb"
+}

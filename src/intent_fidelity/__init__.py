@@ -39,12 +39,29 @@ from .metrics import (
     false_positive_rate,
     f1,
     intrusion_verdict,
+    meta_integrity_verdict,
     precision,
     recall,
     roc_auc,
     roc_points,
+    separation_verdict,
 )
 from .corpus import CONSEQUENCE_WEIGHTS, SYNONYMS, Item, build_corpus
+from .adjudication import (
+    AdjItem,
+    adjudication_leakage,
+    build_adjudication_corpus,
+    paternalistic_baseline_flags,
+)
+from .meta_integrity import (
+    default_policy,
+    hashing_is_deterministic,
+    is_material_under,
+    policy_hash,
+    run_equivalence_battery,
+    run_tamper_battery,
+    silent_damage,
+)
 from .proofrecord import (
     HONEST_SCOPE,
     SERIES,
@@ -83,15 +100,30 @@ __all__ = [
     "false_positive_rate",
     "f1",
     "intrusion_verdict",
+    "meta_integrity_verdict",
     "precision",
     "recall",
     "roc_auc",
     "roc_points",
+    "separation_verdict",
     # corpus
     "CONSEQUENCE_WEIGHTS",
     "SYNONYMS",
     "Item",
     "build_corpus",
+    # adjudication (IF-03)
+    "AdjItem",
+    "adjudication_leakage",
+    "build_adjudication_corpus",
+    "paternalistic_baseline_flags",
+    # meta-integrity (IF-05)
+    "default_policy",
+    "hashing_is_deterministic",
+    "is_material_under",
+    "policy_hash",
+    "run_equivalence_battery",
+    "run_tamper_battery",
+    "silent_damage",
     # proofrecord
     "HONEST_SCOPE",
     "SERIES",

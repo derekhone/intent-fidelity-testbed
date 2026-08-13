@@ -27,3 +27,7 @@ htmlcov/
 experiments/**/results/*
 !experiments/**/results/*.proofrecord.json
 !experiments/**/results/.gitkeep
+
+# Generated document derivatives (source of truth is the .md)
+*.docx
+*.pdf
