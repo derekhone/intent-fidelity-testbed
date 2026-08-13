@@ -8,6 +8,7 @@ Part of the Remnant Fieldworks — Coherent Inheritance Framework (CIF) / Execut
 Status: **preregistered & locked** (`MANIFEST.sha256`) · IF-01 **PASS** · IF-02 **PASS** · IF-03 **PASS** · IF-05 **PASS**
 
 **Cite this work** (concept DOI, always resolves to latest version): [10.5281/zenodo.21911205](https://doi.org/10.5281/zenodo.21911205) ·
+v1.1.0: [10.5281/zenodo.21911272](https://doi.org/10.5281/zenodo.21911272) ·
 v1.0.0: [10.5281/zenodo.21911206](https://doi.org/10.5281/zenodo.21911206) ·
 GitHub: <https://github.com/derekhone/intent-fidelity-testbed>
 
