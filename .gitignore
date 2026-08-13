@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+env/
+venv/
+.venv/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Publish-regardless covenant: track ProofRecords, ignore other run artifacts
+experiments/**/results/*
+!experiments/**/results/*.proofrecord.json
+!experiments/**/results/.gitkeep

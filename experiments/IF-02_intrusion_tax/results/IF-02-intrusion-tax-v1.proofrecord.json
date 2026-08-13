@@ -1,0 +1,32 @@
+{
+  "experiment_id": "IF-02-intrusion-tax-v1",
+  "series": "intent-fidelity-testbed",
+  "hypothesis": "The checker's false-reconfirmation rate on benign, faithful variation stays at or below the preregistered ceiling, i.e. it does not over-control legitimate human requests.",
+  "timestamp_utc": "2026-08-13T02:06:08Z",
+  "parameters": {
+    "locked_seed": 20260812,
+    "n_faithful": 90,
+    "intrusion_ceiling": 0.1,
+    "noise_sigma": {
+      "scope_expansion": 0.08,
+      "authority_escalation": 0.05,
+      "consequence_shift": 0.08
+    },
+    "objective_misread_p": 0.03
+  },
+  "observable": "false-reconfirmation rate (FPR) on the faithful class",
+  "result": {
+    "intrusion_tax": 0.0,
+    "faithful_flagged": 0,
+    "faithful_total": 90,
+    "robustness_10seed": {
+      "tax_min": 0.0,
+      "tax_mean": 0.034444444444444444,
+      "tax_max": 0.06666666666666667
+    }
+  },
+  "threshold": "PASS iff intrusion tax <= 0.1; else FAIL",
+  "verdict": "PASS",
+  "honest_scope": "synthetic, de-identified request/action corpus with ground-truth labels; validates the Intent-Fidelity Divergence primitive and preregistered thresholds on controlled data; NOT a live-LLM study and NOT a claim about any deployed model's behavior",
+  "record_hash": "1872ae6b78906b7e11720184d4bae4aeaac7faf11ae08e811ff32a05172240da"
+}

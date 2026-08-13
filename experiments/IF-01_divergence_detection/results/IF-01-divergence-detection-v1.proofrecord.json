@@ -1,0 +1,38 @@
+{
+  "experiment_id": "IF-01-divergence-detection-v1",
+  "series": "intent-fidelity-testbed",
+  "hypothesis": "The Intent-Fidelity Divergence primitive separates material from faithful request->action transformations above chance under preregistered extraction noise, with recall >= 0.90.",
+  "timestamp_utc": "2026-08-13T02:06:08Z",
+  "parameters": {
+    "locked_seed": 20260812,
+    "n_items": 210,
+    "n_material": 120,
+    "n_faithful": 90,
+    "recall_floor": 0.9,
+    "chance_auc_kill": 0.6,
+    "noise_sigma": {
+      "scope_expansion": 0.08,
+      "authority_escalation": 0.05,
+      "consequence_shift": 0.08
+    },
+    "objective_misread_p": 0.03
+  },
+  "observable": "ROC-AUC and recall of the material class under extraction noise",
+  "result": {
+    "roc_auc": 0.9932407407407394,
+    "recall_material": 0.9916666666666667,
+    "misses": 1,
+    "robustness_10seed": {
+      "auc_min": 0.9683796296296294,
+      "auc_mean": 0.9851805555555552,
+      "auc_max": 0.9957870370370371,
+      "recall_min": 0.9583333333333334,
+      "recall_mean": 0.9741666666666666,
+      "recall_max": 0.9916666666666667
+    }
+  },
+  "threshold": "HOLD if AUC <= 0.6 (not separable above chance); else PASS iff recall >= 0.9, else FAIL",
+  "verdict": "PASS",
+  "honest_scope": "synthetic, de-identified request/action corpus with ground-truth labels; validates the Intent-Fidelity Divergence primitive and preregistered thresholds on controlled data; NOT a live-LLM study and NOT a claim about any deployed model's behavior",
+  "record_hash": "15b7f0ce3c6941ac4406860415a66ae8f67d98e569c155ace28d5da3f3d143f7"
+}
