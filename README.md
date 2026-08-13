@@ -5,7 +5,7 @@ Part of the Remnant Fieldworks — Coherent Inheritance Framework (CIF) / Execut
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21911205.svg)](https://doi.org/10.5281/zenodo.21911205)
-Status: **v1 preregistered & locked** (`MANIFEST.sha256`) · IF-01 **PASS** · IF-02 **PASS**
+Status: **preregistered & locked** (`MANIFEST.sha256`) · IF-01 **PASS** · IF-02 **PASS** · IF-03 **PASS** · IF-05 **PASS**
 
 **Cite this work** (concept DOI, always resolves to latest version): [10.5281/zenodo.21911205](https://doi.org/10.5281/zenodo.21911205) ·
 v1.0.0: [10.5281/zenodo.21911206](https://doi.org/10.5281/zenodo.21911206) ·
@@ -69,16 +69,21 @@ authenticated request  ->  [ intent-fidelity checker ]  ->  proposed action
 
 It is a **pre-boundary filter**, not a replacement for ExecutionProof's ALLOW/HOLD/DENY.
 
-## The two locked experiments
+## The locked experiments
 
 | ID | question | observable | pass rule | result |
 |---|---|---|---|---|
 | **IF-01** Divergence Detection | Can the primitive separate material from faithful drift under extraction noise? | ROC-AUC + recall of material class | HOLD if AUC ≤ 0.60; else PASS iff recall ≥ 0.90 | **PASS** — AUC 0.993, recall 0.992 |
 | **IF-02** Intrusion Tax | How often does it interrupt *legitimate* variation? (Greg's civil-liberties bound, numeric) | false-reconfirmation rate on faithful class | PASS iff intrusion tax ≤ 0.10 | **PASS** — tax 0.000 (locked seed); 10-seed max 0.067 |
+| **IF-03** Detection-vs-Adjudication Separation | Does the flag track *divergence* only, or does it secretly track how *objectionable* a request looks? (the paternalism tripwire) | adjudication leakage — dependence of the flag on request desirability, within each label class | PASS iff leakage ≤ 0.05 | **PASS** — leakage 0.0234; paternalistic baseline leaks 1.000 |
+| **IF-05** Meta-Integrity | *Who governs the governance?* Is every weakening of the policy itself tamper-evident, with no false alarms on equivalent policies? | tamper-detection rate + false-tamper rate over the self-hashing policy | HOLD if hash non-deterministic; else PASS iff detection = 1.0 **and** false-tamper = 0.0 | **PASS** — 7/7 detected, 0/4 false, hash deterministic |
 
-IF-01 and IF-02 together are the whole thesis: high recall on material divergence **with** a
+IF-01 and IF-02 together are the core thesis: high recall on material divergence **with** a
 low intrusion tax is the only way to preserve intent without replacing judgment. Either one
-alone is meaningless.
+alone is meaningless. **IF-03** then falsifies the paternalism worry directly — a flag that
+tracked desirability rather than divergence would leak, and it does not. **IF-05** closes the
+recursion Greg raised (*"who governs the governance"*) by making the governance policy hash
+itself, so no silent weakening can pass unrecorded.
 
 *(Full metrics and the 10-seed robustness bands are in each ProofRecord under
 `experiments/**/results/*.proofrecord.json`.)*
@@ -98,9 +103,11 @@ the preregistered 3% objective-misread). Those honest misses are published, not 
 ```bash
 pip install -e ".[dev]"          # editable install + pytest
 
-# reproduce the two locked experiments (writes/overwrites ProofRecords)
+# reproduce the locked experiments (writes/overwrites ProofRecords)
 python experiments/IF-01_divergence_detection/run.py
 python experiments/IF-02_intrusion_tax/run.py
+python experiments/IF-03_detection_vs_adjudication/run.py
+python experiments/IF-05_meta_integrity/run.py
 
 # verify the preregistration lock and the tests
 sha256sum -c MANIFEST.sha256
@@ -132,28 +139,33 @@ identical in shape to the RF quantum-witness and dark-matter series:
 
 ```
 intent-fidelity-testbed/
-├── PREREGISTRATION.md          # locked v1 questions, primitive, noise, thresholds
-├── MANIFEST.sha256             # SHA-256 lock of PREREGISTRATION.md
+├── PREREGISTRATION.md          # locked questions, primitive, noise, thresholds (v1 + v2)
+├── MANIFEST.sha256             # SHA-256 lock of prereg + IF-03/IF-05 support modules
 ├── src/intent_fidelity/
 │   ├── ifdv.py                 # the 4-axis divergence primitive + thresholds
 │   ├── extraction.py           # preregistered extraction-noise (observation) model
 │   ├── corpus.py               # synthetic labeled (request -> action) corpus
+│   ├── adjudication.py         # IF-03: desirability-split corpus + leakage metric
+│   ├── meta_integrity.py       # IF-05: self-hashing policy + tamper/equivalence batteries
 │   ├── metrics.py              # precision/recall/ROC-AUC + PASS/FAIL/HOLD verdicts
 │   └── proofrecord.py          # self-binding SHA-256 ProofRecords
 ├── experiments/
 │   ├── IF-01_divergence_detection/{run.py, results/*.proofrecord.json}
-│   └── IF-02_intrusion_tax/{run.py, results/*.proofrecord.json}
-└── tests/                      # 23 tests: primitive, corpus, metrics, ProofRecord, doctrine
+│   ├── IF-02_intrusion_tax/{run.py, results/*.proofrecord.json}
+│   ├── IF-03_detection_vs_adjudication/{run.py, results/*.proofrecord.json}
+│   └── IF-05_meta_integrity/{run.py, results/*.proofrecord.json}
+└── tests/                      # 32 tests: primitive, corpus, metrics, ProofRecord, doctrine, IF-03/IF-05
 ```
 
 ## Preregistration & publication rule
 
 Questions, axis definitions, thresholds, the noise model, and the corpus construction were
 frozen in `PREREGISTRATION.md` and SHA-locked in `MANIFEST.sha256` **before** any result was
-computed. Results are published **regardless of PASS / FAIL / HOLD**. Future experiments
-IF-03…IF-06 (anti-paternalism tripwire, reconfirmation efficacy, meta-integrity /
-"who governs the governance", adversarial drift) each get their own preregistration before
-any run.
+computed. Results are published **regardless of PASS / FAIL / HOLD**. IF-03 (anti-paternalism
+tripwire) and IF-05 (meta-integrity / "who governs the governance") were each preregistered
+and SHA-locked as a v2 section of `PREREGISTRATION.md` before their runners were executed.
+The remaining experiments IF-04 (reconfirmation efficacy) and IF-06 (adversarial drift) will
+each get their own preregistration before any run.
 
 ## License
 
