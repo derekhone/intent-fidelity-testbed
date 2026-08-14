@@ -1,0 +1,45 @@
+{
+  "experiment_id": "IF-04-reconfirmation-efficacy-v1",
+  "series": "intent-fidelity-testbed",
+  "hypothesis": "When the IFDV checker correctly flags a material transformation, the dominant divergence axis matches the ground-truth category of the transformation, making the reconfirmation message actionable rather than a generic 'are you sure?' prompt.",
+  "timestamp_utc": "2026-08-14T02:30:19Z",
+  "parameters": {
+    "locked_seed": 20260812,
+    "n_per_cell": 30,
+    "attribution_floor": 0.8,
+    "recall_kill": 0.6,
+    "category_to_axis": {
+      "material.scope_creep": "scope_expansion",
+      "material.scope_creep.subtle": "scope_expansion",
+      "material.objective_swap": "objective_substitution",
+      "material.objective_swap.subtle": "objective_substitution",
+      "material.authority_escalation": "authority_escalation",
+      "material.authority_escalation.subtle": "authority_escalation",
+      "material.consequence_injection": "consequence_shift",
+      "material.consequence_injection.subtle": "consequence_shift"
+    }
+  },
+  "observable": "axis attribution accuracy on true positives",
+  "result": {
+    "attribution_accuracy": 0.9915966386554622,
+    "tp_correct": 118,
+    "tp_total": 119,
+    "recall": 0.9916666666666667,
+    "fp_total": 0,
+    "fp_axis_profile": {
+      "scope_expansion": 0,
+      "objective_substitution": 0,
+      "authority_escalation": 0,
+      "consequence_shift": 0
+    },
+    "robustness_10seed": {
+      "acc_min": 0.9915966386554622,
+      "acc_mean": 0.9983193277310924,
+      "acc_max": 1.0
+    }
+  },
+  "threshold": "HOLD if recall < 0.6; PASS iff axis_attribution_accuracy >= 0.8; else FAIL",
+  "verdict": "PASS",
+  "honest_scope": "synthetic, de-identified request/action corpus with ground-truth labels; validates the Intent-Fidelity Divergence primitive and preregistered thresholds on controlled data; NOT a live-LLM study and NOT a claim about any deployed model's behavior",
+  "record_hash": "5f5d63a4406888cd42fe1880c4585f0ff8900d9246d8b5d26c88ad8670511e8f"
+}
