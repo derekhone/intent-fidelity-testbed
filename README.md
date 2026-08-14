@@ -5,9 +5,10 @@ Part of the Remnant Fieldworks — Coherent Inheritance Framework (CIF) / Execut
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21911205.svg)](https://doi.org/10.5281/zenodo.21911205)
-Status: **preregistered & locked** (`MANIFEST.sha256`) · IF-01 **PASS** · IF-02 **PASS** · IF-03 **PASS** · IF-05 **PASS**
+Status: **preregistered & locked** (`MANIFEST.sha256`) · series **complete** · IF-01 **PASS** · IF-02 **PASS** · IF-03 **PASS** · IF-04 **PASS** · IF-05 **PASS** · IF-06 **PASS**
 
 **Cite this work** (concept DOI, always resolves to latest version): [10.5281/zenodo.21911205](https://doi.org/10.5281/zenodo.21911205) ·
+v1.2.0: [10.5281/zenodo.21927042](https://doi.org/10.5281/zenodo.21927042) ·
 v1.1.0: [10.5281/zenodo.21911272](https://doi.org/10.5281/zenodo.21911272) ·
 v1.0.0: [10.5281/zenodo.21911206](https://doi.org/10.5281/zenodo.21911206) ·
 GitHub: <https://github.com/derekhone/intent-fidelity-testbed>
@@ -77,7 +78,9 @@ It is a **pre-boundary filter**, not a replacement for ExecutionProof's ALLOW/HO
 | **IF-01** Divergence Detection | Can the primitive separate material from faithful drift under extraction noise? | ROC-AUC + recall of material class | HOLD if AUC ≤ 0.60; else PASS iff recall ≥ 0.90 | **PASS** — AUC 0.993, recall 0.992 |
 | **IF-02** Intrusion Tax | How often does it interrupt *legitimate* variation? (Greg's civil-liberties bound, numeric) | false-reconfirmation rate on faithful class | PASS iff intrusion tax ≤ 0.10 | **PASS** — tax 0.000 (locked seed); 10-seed max 0.067 |
 | **IF-03** Detection-vs-Adjudication Separation | Does the flag track *divergence* only, or does it secretly track how *objectionable* a request looks? (the paternalism tripwire) | adjudication leakage — dependence of the flag on request desirability, within each label class | PASS iff leakage ≤ 0.05 | **PASS** — leakage 0.0234; paternalistic baseline leaks 1.000 |
+| **IF-04** Reconfirmation Efficacy | When the checker flags a material transformation, is the alert *actionable* — does the dominant IFDV axis identify the TYPE of divergence, or is it just "are you sure?" | axis attribution accuracy on true positives (dominant axis vs ground-truth category) | HOLD if recall < 0.60; else PASS iff attribution accuracy ≥ 0.80 | **PASS** — attribution 0.9916 (118/119), recall 0.9917, 10-seed band [0.992, 1.000] |
 | **IF-05** Meta-Integrity | *Who governs the governance?* Is every weakening of the policy itself tamper-evident, with no false alarms on equivalent policies? | tamper-detection rate + false-tamper rate over the self-hashing policy | HOLD if hash non-deterministic; else PASS iff detection = 1.0 **and** false-tamper = 0.0 | **PASS** — 7/7 detected, 0/4 false, hash deterministic |
+| **IF-06** Adversarial Drift | Can an adversary who knows the thresholds evade the checker by spreading material change across all four axes, each kept just below its own τ? | evasion rate on a frozen 120-item multi-axis sub-threshold adversarial corpus | PASS iff evasion rate ≤ 0.15 | **PASS** — evasion 0.0833 (10/120 evaded, 110 caught), 10-seed band [0.075, 0.125]; regular-corpus evasion 0.0083 |
 
 IF-01 and IF-02 together are the core thesis: high recall on material divergence **with** a
 low intrusion tax is the only way to preserve intent without replacing judgment. Either one
@@ -108,7 +111,9 @@ pip install -e ".[dev]"          # editable install + pytest
 python experiments/IF-01_divergence_detection/run.py
 python experiments/IF-02_intrusion_tax/run.py
 python experiments/IF-03_detection_vs_adjudication/run.py
+python experiments/IF-04_reconfirmation_efficacy/run.py
 python experiments/IF-05_meta_integrity/run.py
+python experiments/IF-06_adversarial_drift/run.py
 
 # verify the preregistration lock and the tests
 sha256sum -c MANIFEST.sha256
@@ -141,7 +146,8 @@ identical in shape to the RF quantum-witness and dark-matter series:
 ```
 intent-fidelity-testbed/
 ├── PREREGISTRATION.md          # locked questions, primitive, noise, thresholds (v1 + v2)
-├── MANIFEST.sha256             # SHA-256 lock of prereg + IF-03/IF-05 support modules
+├── PREREGISTRATION_V3_AMENDMENT.md  # v3 freeze: IF-04 + IF-06 questions and thresholds
+├── MANIFEST.sha256             # SHA-256 lock of prereg (v1/v2 + v3 amendment), IF-03/IF-05 support modules, IF-04/IF-06 runners
 ├── src/intent_fidelity/
 │   ├── ifdv.py                 # the 4-axis divergence primitive + thresholds
 │   ├── extraction.py           # preregistered extraction-noise (observation) model
@@ -154,7 +160,9 @@ intent-fidelity-testbed/
 │   ├── IF-01_divergence_detection/{run.py, results/*.proofrecord.json}
 │   ├── IF-02_intrusion_tax/{run.py, results/*.proofrecord.json}
 │   ├── IF-03_detection_vs_adjudication/{run.py, results/*.proofrecord.json}
-│   └── IF-05_meta_integrity/{run.py, results/*.proofrecord.json}
+│   ├── IF-04_reconfirmation_efficacy/{run.py, results/*.proofrecord.json}
+│   ├── IF-05_meta_integrity/{run.py, results/*.proofrecord.json}
+│   └── IF-06_adversarial_drift/{run.py, results/*.proofrecord.json}
 └── tests/                      # 32 tests: primitive, corpus, metrics, ProofRecord, doctrine, IF-03/IF-05
 ```
 
@@ -165,8 +173,9 @@ frozen in `PREREGISTRATION.md` and SHA-locked in `MANIFEST.sha256` **before** an
 computed. Results are published **regardless of PASS / FAIL / HOLD**. IF-03 (anti-paternalism
 tripwire) and IF-05 (meta-integrity / "who governs the governance") were each preregistered
 and SHA-locked as a v2 section of `PREREGISTRATION.md` before their runners were executed.
-The remaining experiments IF-04 (reconfirmation efficacy) and IF-06 (adversarial drift) will
-each get their own preregistration before any run.
+IF-04 (reconfirmation efficacy) and IF-06 (adversarial drift) were likewise preregistered and
+SHA-locked in `PREREGISTRATION_V3_AMENDMENT.md` **before** either runner was executed, which
+completes the six-experiment series.
 
 ## License
 
