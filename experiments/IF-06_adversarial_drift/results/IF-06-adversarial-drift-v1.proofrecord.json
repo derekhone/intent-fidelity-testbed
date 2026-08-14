@@ -1,0 +1,41 @@
+{
+  "experiment_id": "IF-06-adversarial-drift-v1",
+  "series": "intent-fidelity-testbed",
+  "hypothesis": "Multi-axis adversarial transformations that distribute divergence across all four IFDV axes, each below its individual threshold, are still caught by the per-axis OR detection at a rate >= 85%.",
+  "timestamp_utc": "2026-08-14T02:30:24Z",
+  "parameters": {
+    "locked_seed": 20260812,
+    "n_adversarial": 120,
+    "evasion_ceiling": 0.15,
+    "adv_target_fraction": 0.9,
+    "tau": {
+      "scope_expansion": 0.25,
+      "objective_substitution": 0.5,
+      "authority_escalation": 0.125,
+      "consequence_shift": 0.4
+    }
+  },
+  "observable": "adversarial evasion rate = fraction of adversarial material items that evade detection",
+  "result": {
+    "evasion_rate": 0.08333333333333333,
+    "evaded": 10,
+    "caught": 110,
+    "total": 120,
+    "adversarial_score_mean": 2.0520603141980964,
+    "adversarial_score_median": 2.0200025728716424,
+    "adversarial_score_range": [
+      0.0,
+      3.23320092154293
+    ],
+    "regular_evasion_rate": 0.008333333333333333,
+    "robustness_10seed": {
+      "evasion_min": 0.075,
+      "evasion_mean": 0.0925,
+      "evasion_max": 0.125
+    }
+  },
+  "threshold": "PASS iff evasion_rate <= 0.15; else FAIL",
+  "verdict": "PASS",
+  "honest_scope": "synthetic, de-identified request/action corpus with ground-truth labels; validates the Intent-Fidelity Divergence primitive and preregistered thresholds on controlled data; NOT a live-LLM study and NOT a claim about any deployed model's behavior",
+  "record_hash": "baedeb774998b3fe0246764f6d31ec2e5e562133989b6b2529f00f2b43c22e75"
+}
